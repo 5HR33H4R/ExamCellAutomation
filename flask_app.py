@@ -1,6 +1,7 @@
 from flask import Flask , render_template , request, redirect, url_for
 import sqlite3
 from matrix2 import run , write ,missing,read
+from openpyxl import load_workbook
 
 app = Flask(__name__)
 @app.route("/")
@@ -70,6 +71,7 @@ def generate():
 		temp_no = cursor.fetchall()
 	if request.method == 'POST':
 		staff_name = request.form['staff']
+		test_name = request.form['test']
 		room_no  = request.form['room']
 		it_start = request.form['it_start']
 		it_end   = request.form['it_end']
@@ -106,12 +108,12 @@ def generate():
 		el_list = missing(r_missing,el_list)
 		check =len(el_list)+len(ec_list)+len(it_list)
 		if( check <= int(seat) ): 
-			data = run(el_list,ec_list,it_list,row,col,staff_name)
+			data = run(el_list,ec_list,it_list,row,col,staff_name,test_name)
 			write(data,room_no)
 			error = "Seating Arrangment For "+ room_no + " Is generated "
 		else:
 			error = " Total Number of student is Not More than " + str(seat) + " " +  str(check)	
-	return render_template("generate.html",room_no = temp_no,error=error,staffList=['M Vijayalakshmi','N Parveen Banu','K Saravanan','T Amutha'] )
+	return render_template("generate.html",room_no = temp_no,error=error,staffList=['M Vijayalakshmi','N Parveen Banu','K Saravanan','T Amutha'],test_list=['UT1','CT1','UT2','CT2','Model'] )
 @app.route('/result',methods=['GET','POST'])
 def show():
 	data=None
@@ -128,6 +130,15 @@ def show():
 		data= data.to_html()
 		filename = '/static/execl/'+room_no+'.xlsx'
 	return render_template("show_result.html",data=data,room_no=temp_no,filename=filename)
+
+
+@app.route('/testing',methods=['GET','POST'])
+def testing():
+	book = load_workbook("./static/execl/238.xlsx")
+	sheet = book.active
+	return render_template("test.html", sheet=sheet)
+
+
 @app.route('/delete/<id>')
 def delete(id):
 	myconn = sqlite3.connect("room_details.db")

@@ -5,7 +5,7 @@ def missing(missing,st_list):
                 st_list.remove(i)
     return st_list
 
-def run(el_list,ec_list,it_list,col,row,sname): 
+def run(el_list,ec_list,it_list,col,row,sname,testName): 
 
     temp_matrix =[]
     while ( it_list != [] or el_list != [] or ec_list != [] ):
@@ -37,7 +37,7 @@ def run(el_list,ec_list,it_list,col,row,sname):
         for j in range(len(matrix[0])):
             Result[j][i] = matrix[i][j]
     #Result.append(['Staff Name','abc'])
-    li = [['Staff',sname]]
+    li = [['Staff:',sname, ' ','Test:',testName],[' ',' ',' ',' ',' ']]
     for r in Result:
         li.append(r)
     #li.append(Result)
